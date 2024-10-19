@@ -231,3 +231,46 @@ void handleTemperature() {
 4. Faça o upload do código para o ESP32.
 
 
+# monitoramento-iot-esp32
+
+
+
+
+
+
+Descrição Geral
+O sistema inicia conectando o ESP32 a uma rede Wi-Fi usando as credenciais especificadas no código. Para realizar a comunicação com o servidor remoto, o protocolo MQTT é utilizado. Esse protocolo é leve e ideal para aplicações IoT, onde a troca frequente de pequenas quantidades de dados é necessária. A partir dessa conexão, o ESP32 lê periodicamente os dados de três sensores principais:
+
+Sensor de Luminosidade: Um sensor conectado a um pino analógico do ESP32 mede a quantidade de luz no ambiente.
+Sensor DHT11: Responsável por medir a temperatura e a umidade do ambiente.
+Essas leituras são enviadas ao servidor via MQTT em tópicos específicos, para que possam ser consumidas por outros dispositivos ou sistemas que monitorem as condições do ambiente.
+
+Componentes do Código
+Bibliotecas Importadas: O código utiliza diversas bibliotecas essenciais para o funcionamento:
+
+WiFi.h para conexão à rede sem fio.
+PubSubClient.h para comunicação MQTT.
+DHT.h e Adafruit_Sensor.h para leitura dos sensores de temperatura e umidade.
+Conexão Wi-Fi e MQTT: Após a inicialização, o ESP32 se conecta a uma rede Wi-Fi configurada através do SSID e senha fornecidos. Em seguida, o dispositivo se conecta ao broker MQTT, usando o endereço IP e a porta do servidor, para enviar e receber mensagens.
+
+Leitura dos Sensores:
+
+O sensor de luminosidade está ligado a um pino analógico, onde o valor lido é convertido em um valor entre 0 e 100 para indicar o nível de luminosidade.
+O sensor DHT11 é utilizado para medir a temperatura e a umidade do ambiente. A leitura desses valores é feita periodicamente.
+Envio de Dados via MQTT: Cada sensor tem um tópico específico para o envio dos dados coletados. Por exemplo:
+
+O valor da luminosidade é enviado para o tópico TOPICO_PUBLISH_2.
+A umidade é publicada em TOPICO_PUBLISH_3.
+A temperatura é enviada para TOPICO_PUBLISH_4.
+Esses tópicos podem ser assinados por qualquer outro dispositivo que tenha acesso ao broker MQTT, permitindo a monitoração em tempo real.
+
+Controle do LED Onboard: Além de ler e enviar dados, o código também permite o controle de um LED conectado ao ESP32 através de mensagens recebidas do broker. Dependendo do conteúdo da mensagem MQTT, o LED pode ser ligado ou desligado remotamente.
+Funcionamento
+O sistema é estruturado em duas fases principais:
+
+Setup: Inicializa as conexões e garante que o ESP32 esteja pronto para operar, conectando-se ao Wi-Fi e ao broker MQTT.
+Loop: Em um ciclo contínuo, o ESP32 verifica a conectividade com a rede e o broker, realiza as leituras dos sensores e publica os dados nos tópicos MQTT correspondentes. Também verifica se há novas mensagens no tópico de controle do LED e executa a ação solicitada (ligar/desligar).
+Aplicação
+Este código pode ser utilizado em projetos de monitoramento ambiental, como em estufas, adegas ou qualquer outro local onde seja necessário monitorar a temperatura, umidade e luminosidade. O uso do MQTT permite a fácil integração com dashboards e sistemas de controle remoto, facilitando a visualização dos dados em tempo real e a automação de processos.
+
+Em resumo, o código configura uma plataforma completa de coleta de dados via sensores e envio desses dados para um servidor remoto, usando comunicação sem fio, tudo gerenciado pelo ESP32, de forma eficiente e escalável.
